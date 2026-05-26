@@ -12,6 +12,10 @@
     font-family: 'PHGTL';
     src: url('https://raw.githubusercontent.com/dserdyukov/dserdyukov.github.io/main/fonts/PHGTL.ttf') format('truetype');
 }
+@font-face {
+    font-family: 'PHGTL_KZ';
+    src: url('https://raw.githubusercontent.com/dserdyukov/dserdyukov.github.io/main/fonts/PHGTL_kz.ttf') format('truetype');
+}
 * {
     margin: 0;
     padding: 0;
@@ -30,8 +34,7 @@ body {
     background: #070b18;
 }
 body.lang-kz {
-    /* Для казахского используем только Noto Sans — он идеально поддерживает все буквы */
-    font-family: 'Noto Sans', 'Roboto', 'Segoe UI', 'Arial', sans-serif !important;
+    font-family: 'PHGTL_KZ', 'Noto Sans', 'Roboto', 'Segoe UI', 'Arial', sans-serif !important;
 }
 .bg-custom {
     position: absolute;
@@ -55,10 +58,16 @@ body.lang-kz {
     margin-top: 60vh;
 }
 @media (max-height: 800px) {
-    .container { margin-top: 55vh; padding: 25px 40px; }
+    .container {
+        margin-top: 55vh;
+        padding: 25px 40px;
+    }
 }
 @media (max-height: 600px) {
-    .container { margin-top: 50vh; padding: 20px 30px; }
+    .container {
+        margin-top: 50vh;
+        padding: 20px 30px;
+    }
 }
 .title {
     font-size: clamp(1.8rem, 5vw, 3.5rem);
@@ -112,7 +121,9 @@ body.lang-kz {
 </div>
 <script>
 function simulateActivity() {
-    try { window.dispatchEvent(new Event('mousemove')); } catch(e) {}
+    try {
+        window.dispatchEvent(new Event('mousemove'));
+    } catch (e) {}
 }
 setInterval(simulateActivity, 25000);
 window.addEventListener('load', simulateActivity);
@@ -120,7 +131,9 @@ window.addEventListener('focus', simulateActivity);
 document.addEventListener('click', simulateActivity);
 
 const targetDate = new Date(2026, 6, 29);
-function format(n) { return n < 10 ? '0' + n : n; }
+function format(n) {
+    return n < 10 ? '0' + n : n;
+}
 function ruDecline(n, f) {
     let a = Math.abs(n) % 100, b = Math.abs(n) % 10;
     if (a > 4 && a < 20) return f[2];
@@ -128,7 +141,9 @@ function ruDecline(n, f) {
     if (b > 1 && b < 5) return f[1];
     return f[2];
 }
-function enUnit(n, s, p) { return n === 1 ? s : p; }
+function enUnit(n, s, p) {
+    return n === 1 ? s : p;
+}
 const kzUnits = {
     days: 'күн',
     hours: 'сағат',
@@ -139,7 +154,10 @@ const titles = {
     en: 'Time left until Games of the Future 2026',
     kz: 'Болашақ Ойындары 2026-ға дейін қалды'
 };
-let currentLang = 'ru', currentDays = 0, currentHours = 0, currentMinutes = 0;
+let currentLang = 'ru',
+    currentDays = 0,
+    currentHours = 0,
+    currentMinutes = 0;
 const titleEl = document.getElementById('main-title');
 const daysLabel = document.getElementById('unit-label');
 const hoursLabel = document.getElementById('unit-label2');
@@ -178,13 +196,17 @@ function switchLanguage() {
 }
 function updateTimer() {
     const diff = targetDate - new Date();
-    let d = 0, h = 0, m = 0;
+    let d = 0,
+        h = 0,
+        m = 0;
     if (diff > 0) {
         d = Math.floor(diff / 86400000);
         h = Math.floor((diff % 86400000) / 3600000);
         m = Math.floor((diff % 3600000) / 60000);
     }
-    currentDays = d; currentHours = h; currentMinutes = m;
+    currentDays = d;
+    currentHours = h;
+    currentMinutes = m;
     document.getElementById('days').textContent = format(d);
     document.getElementById('hours').textContent = format(h);
     document.getElementById('minutes').textContent = format(m);
