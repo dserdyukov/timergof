@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Игры Будущего 2026 — обратный отсчёт (рус/eng/каз)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⏳%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+    font-family: 'PHGTL';
+    src: url('https://raw.githubusercontent.com/dserdyukov/dserdyukov.github.io/main/fonts/PHGTL.ttf') format('truetype');
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-family: 'PHGTL', 'Orbitron', 'Segoe UI', 'Arial', sans-serif;
+    color: #fff;
+    position: relative;
+    background: #070b18;
+}
+body.lang-kz {
+    /* Для казахского используем только Noto Sans — он идеально поддерживает все буквы */
+    font-family: 'Noto Sans', 'Roboto', 'Segoe UI', 'Arial', sans-serif !important;
+}
+.bg-custom {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: url('https://raw.githubusercontent.com/dserdyukov/dserdyukov.github.io/main/IMG_20260225_165332_463.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 30px 50px;
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    border-radius: 40px;
+    backdrop-filter: blur(10px);
+    background: rgba(10, 15, 35, 0.2);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+    margin-top: 60vh;
+}
+@media (max-height: 800px) {
+    .container { margin-top: 55vh; padding: 25px 40px; }
+}
+@media (max-height: 600px) {
+    .container { margin-top: 50vh; padding: 20px 30px; }
+}
+.title {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px cyan, 0 0 30px magenta;
+    line-height: 1.3;
+}
+.timer {
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 800;
+    display: flex;
+    gap: 0.3em;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+.timer span {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.05em 0.3em;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4) inset;
+}
+.label {
+    font-size: clamp(1rem, 2.5vw, 1.8rem);
+    margin-left: 0.2rem;
+    margin-right: 0.5rem;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    display: inline-block;
+}
+.language-indicator {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    opacity: 0.8;
+    letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+<div class="bg-custom"></div>
+<div class="container">
+    <div class="title" id="main-title">До Игр Будущего 2026 осталось</div>
+    <div class="timer">
+        <span id="days">00</span><span class="label" id="unit-label">дней</span>
+        <span id="hours">00</span><span class="label" id="unit-label2">часов</span>
+        <span id="minutes">00</span><span class="label" id="unit-label3">минут</span>
+    </div>
+    <div class="language-indicator" id="lang-indicator">🇷🇺 Русский</div>
+</div>
+<script>
+function simulateActivity() {
+    try { window.dispatchEvent(new Event('mousemove')); } catch(e) {}
+}
+setInterval(simulateActivity, 25000);
+window.addEventListener('load', simulateActivity);
+window.addEventListener('focus', simulateActivity);
+document.addEventListener('click', simulateActivity);
+
+const targetDate = new Date(2026, 6, 29);
+function format(n) { return n < 10 ? '0' + n : n; }
+function ruDecline(n, f) {
+    let a = Math.abs(n) % 100, b = Math.abs(n) % 10;
+    if (a > 4 && a < 20) return f[2];
+    if (b === 1) return f[0];
+    if (b > 1 && b < 5) return f[1];
+    return f[2];
+}
+function enUnit(n, s, p) { return n === 1 ? s : p; }
+const kzUnits = {
+    days: 'күн',
+    hours: 'сағат',
+    minutes: 'минут'
+};
+const titles = {
+    ru: 'До Игр Будущего 2026 осталось',
+    en: 'Time left until Games of the Future 2026',
+    kz: 'Болашақ Ойындары 2026-ға дейін қалды'
+};
+let currentLang = 'ru', currentDays = 0, currentHours = 0, currentMinutes = 0;
+const titleEl = document.getElementById('main-title');
+const daysLabel = document.getElementById('unit-label');
+const hoursLabel = document.getElementById('unit-label2');
+const minutesLabel = document.getElementById('unit-label3');
+const langIndicator = document.getElementById('lang-indicator');
+
+function updateLabels() {
+    if (currentLang === 'ru') {
+        daysLabel.textContent = ruDecline(currentDays, ['день', 'дня', 'дней']);
+        hoursLabel.textContent = ruDecline(currentHours, ['час', 'часа', 'часов']);
+        minutesLabel.textContent = ruDecline(currentMinutes, ['минута', 'минуты', 'минут']);
+        titleEl.textContent = titles.ru;
+        langIndicator.innerHTML = '🇷🇺 Русский';
+        document.body.classList.remove('lang-kz');
+    } else if (currentLang === 'en') {
+        daysLabel.textContent = enUnit(currentDays, 'day', 'days');
+        hoursLabel.textContent = enUnit(currentHours, 'hour', 'hours');
+        minutesLabel.textContent = enUnit(currentMinutes, 'minute', 'minutes');
+        titleEl.textContent = titles.en;
+        langIndicator.innerHTML = '🇬🇧 English';
+        document.body.classList.remove('lang-kz');
+    } else if (currentLang === 'kz') {
+        daysLabel.textContent = kzUnits.days;
+        hoursLabel.textContent = kzUnits.hours;
+        minutesLabel.textContent = kzUnits.minutes;
+        titleEl.textContent = titles.kz;
+        langIndicator.innerHTML = '🇰🇿 Қазақша';
+        document.body.classList.add('lang-kz');
+    }
+}
+function switchLanguage() {
+    if (currentLang === 'ru') currentLang = 'en';
+    else if (currentLang === 'en') currentLang = 'kz';
+    else if (currentLang === 'kz') currentLang = 'ru';
+    updateLabels();
+}
+function updateTimer() {
+    const diff = targetDate - new Date();
+    let d = 0, h = 0, m = 0;
+    if (diff > 0) {
+        d = Math.floor(diff / 86400000);
+        h = Math.floor((diff % 86400000) / 3600000);
+        m = Math.floor((diff % 3600000) / 60000);
+    }
+    currentDays = d; currentHours = h; currentMinutes = m;
+    document.getElementById('days').textContent = format(d);
+    document.getElementById('hours').textContent = format(h);
+    document.getElementById('minutes').textContent = format(m);
+    updateLabels();
+    simulateActivity();
+}
+setInterval(switchLanguage, 5000);
+updateTimer();
+setInterval(updateTimer, 1000);
+</script>
+</body>
+</html>
